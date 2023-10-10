@@ -36,6 +36,8 @@ const friends =
 
 stStephGreen = {"latitude": "53.337839", "longitude": "-6.259520"};
 
+// Ignore this......
+
 // let R = 6371;
 // const pi = 3.141;
 // let SSGLatiR;
@@ -65,6 +67,9 @@ stStephGreen = {"latitude": "53.337839", "longitude": "-6.259520"};
 
 // console.log(SSGLatiR);
 
+// -----------------------------------------------------------------------------
+
+// Main functions...
 const toRadians = degree => {
     return degree * (Math.PI / 180);
   }
@@ -73,40 +78,52 @@ const toDifferenciate = (x, y) => {
   return x - y;
 }
 
+// Convert the degrees to radians for St. Stephen' Green...
 stStephGreen.latitude = (toRadians(stStephGreen.latitude)).toFixed(4);
 stStephGreen.longitude = (toRadians(stStephGreen.longitude)).toFixed(4);
 
 const getDistanceInKilo = () => {
   for(j = 0; j < friends.length; j++) {
     const radius = 6371;
+
+    // Degrees to radians for the friends...
     friends[j].latitude = (toRadians(friends[j].latitude)).toFixed(4);
     friends[j].longitude = (toRadians(friends[j].longitude)).toFixed(4);
 
+    // The difference between St. Stephen's Green and each their houses...
     var latiDiff = (toDifferenciate(friends[j].latitude, stStephGreen.latitude)).toFixed(4);
     var longDiff = (toDifferenciate(friends[j].longitude, stStephGreen.longitude)).toFixed(4);
 
+    // Haversine Formula
     var a = Math.sin(latiDiff / 2) * Math.sin(latiDiff / 2) + 
     Math.cos(stStephGreen.latitude) * Math.cos(friends[j].latitude) * 
     Math.sin(longDiff / 2) * Math.sin(longDiff / 2);
 
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var _0 = radius * c;
+
+    // Add a new key to store the respective distances in kilometers...
     friends[j].kilometers = _0;
   }
 }
 
+// function call...
 getDistanceInKilo();
 
+// array to store all friends within 100 kilometers...
 const within100km = [];
 for(const invitees of friends) {
   if(invitees.kilometers <= 100) {
     within100km.push(invitees);
   }
+  // Sorting by user_id...
   within100km.sort((a, b) => a.user_id - b.user_id);
 }
 
+// Loop thro to print user_id and name...
 within100km.forEach(({user_id, name}) => {
   console.log(`User ID: ${user_id}, Name: ${name}`);
 })
 
+// Console print for normal array.
 console.log(within100km);
